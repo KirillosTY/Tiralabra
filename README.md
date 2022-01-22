@@ -1,3 +1,5 @@
 # Tiralabra
  Tietorakenteet ja algoritmit harjoitustyö
-[Specification documen](Documents/Specification.md)
+
+
+[Specification document](Documents/Specification.md)
