@@ -4,7 +4,7 @@ This project will be used to study different compressing algorightms targeting f
 This will be done using Java 11. 
 
 ## Algorithms and datastructures
-The algorithms used for this study will be Huffman, that uses the a binary tree for compressing and LZ 77. 
+The algorithms used for this study will be Huffman, that uses the a binary tree for compressing, and LZ 77. 
 
 ## Input and Output
 
