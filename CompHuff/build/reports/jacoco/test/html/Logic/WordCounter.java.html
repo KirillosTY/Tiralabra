@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WordCounter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CompHuff</a> &gt; <a href="index.source.html" class="el_package">Logic</a> &gt; <span class="el_source">WordCounter.java</span></div><h1>WordCounter.java</h1><pre class="source lang-java linenums">package Logic;
+
+import java.util.HashMap;
+import java.util.PriorityQueue;
+
+/**
+ * This class handles the forming of the Huffman tree
+ */
+
+public class WordCounter {
+    private HashMap&lt;Character, Integer&gt; wordsCounted;
+
+    private HashMap&lt;Character, CharSequence&gt; coded;
+    private PriorityQueue&lt;Node&gt; listedLetters;
+
+<span class="fc" id="L16">    public WordCounter() {</span>
+
+<span class="fc" id="L18">        wordsCounted = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L19">        coded = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L20">        listedLetters = new PriorityQueue&lt;&gt;();</span>
+
+<span class="fc" id="L22">    }</span>
+
+
+    /**
+     *  Counts all the characters of the text and adds them to a map, then moves the data to a  PriorityQueue.
+     *
+     * @param text
+     */
+
+    public void count(String text) {
+
+
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        for (int i = 0; i &lt; text.length(); i++) {</span>
+
+<span class="fc" id="L36">            wordsCounted.put(text.charAt(i), wordsCounted.getOrDefault(text.charAt(i), 0) + 1);</span>
+
+        }
+
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        for (char c : wordsCounted.keySet()) {</span>
+
+<span class="fc" id="L42">            listedLetters.offer(new Leaf(c, wordsCounted.get(c)));</span>
+
+<span class="fc" id="L44">        }</span>
+
+<span class="fc" id="L46">    }</span>
+
+    /**
+     * This creates forms the huffman via PriorityQueue.
+     */
+    public void treeForming() {
+
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        while (listedLetters.size() &gt; 1) {</span>
+
+<span class="fc" id="L55">            Node first = listedLetters.poll();</span>
+
+<span class="fc" id="L57">            Node second = listedLetters.poll();</span>
+
+             //System.out.println(second.getChar()+&quot; &quot;+ first.getChar()+ &quot;  &quot;+(first.getWeight()+second.getWeight()));
+
+
+
+<span class="fc" id="L63">            Node tree = new Leaf(null, (first.getWeight() + second.getWeight()));</span>
+
+<span class="fc" id="L65">            tree.setLeft(first);</span>
+<span class="fc" id="L66">            tree.setRight(second);</span>
+
+<span class="fc" id="L68">            listedLetters.add(tree);</span>
+<span class="fc" id="L69">        }</span>
+
+
+
+<span class="fc" id="L73">    }</span>
+
+    /**
+     *
+     * This handles the binary value each char will have.
+     */
+
+    public void binaryCalculations() {
+
+<span class="fc" id="L82">        Node node = listedLetters.poll();</span>
+
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">        if (node.left() != null) {</span>
+
+<span class="fc" id="L86">            binaryCalculations(node.left(), &quot;0&quot;);</span>
+        }
+
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">        if (node.right() != null) {</span>
+
+<span class="fc" id="L91">            binaryCalculations(node.right(), &quot;1&quot;);</span>
+        }
+
+<span class="fc" id="L94">    }</span>
+
+    public void binaryCalculations(Node node, String code) {
+<span class="pc bpc" id="L97" title="1 of 4 branches missed.">        if (node.right() == null &amp;&amp; node.left() == null) {</span>
+<span class="fc" id="L98">            coded.put(node.getChar(), code);</span>
+        }
+
+
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        if (node.left() != null) {</span>
+<span class="fc" id="L103">            String temp = code;</span>
+<span class="fc" id="L104">            binaryCalculations(node.left(), temp += &quot;0&quot;);</span>
+        }
+
+<span class="fc bfc" id="L107" title="All 2 branches covered.">        if (node.right() != null) {</span>
+<span class="fc" id="L108">            String temp = code;</span>
+<span class="fc" id="L109">            binaryCalculations(node.right(), temp += &quot;1&quot;);</span>
+        }
+
+
+<span class="fc" id="L113">    }</span>
+
+    public HashMap&lt;Character, Integer&gt; getWordsCounted() {
+<span class="nc" id="L116">        return wordsCounted;</span>
+    }
+
+    public HashMap&lt;Character, CharSequence&gt; getCoded() {
+<span class="fc" id="L120">        return coded;</span>
+    }
+
+    public PriorityQueue&lt;Node&gt; getListedLetters() {
+<span class="fc" id="L124">        return listedLetters;</span>
+    }
+
+    /*
+    static void print2DUtil(Node root, int space) {
+        // Base case
+        if (root == null) {
+            return;
+        }
+
+        // Increase distance between levels
+        space += COUNT;
+
+        // Process right child first
+        print2DUtil(root.right(), space);
+
+        // Print current node after space
+        // count
+        System.out.print(&quot;\n&quot;);
+        for (int i = COUNT; i &lt; space; i++) {
+            System.out.print(&quot; &quot;);
+            System.out.print(root + &quot;\n&quot;);
+        }
+
+        // Process left child
+        print2DUtil(root.left(), space);
+    }
+
+    // Wrapper over print2DUtil()
+    static void print2D(Node root) {
+        // Pass initial space count as 0
+        print2DUtil(root, 0);
+    }
+*/
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
