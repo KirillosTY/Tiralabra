@@ -40,7 +40,7 @@ public class Leaf implements Node, Comparable<Node> {
 
     @Override
     public String toString() {
-        return letter+"";
+        return letter+" "+weight;
     }
 
 

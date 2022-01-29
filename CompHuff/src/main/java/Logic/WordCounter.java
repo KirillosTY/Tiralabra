@@ -1,5 +1,8 @@
 package Logic;
 
+import java.nio.ByteBuffer;
+import java.util.BitSet;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
@@ -10,7 +13,7 @@ import java.util.PriorityQueue;
 public class WordCounter {
     private HashMap<Character, Integer> wordsCounted;
 
-    private HashMap<Character, CharSequence> coded;
+    private HashMap<Character, String> coded;
     private PriorityQueue<Node> listedLetters;
 
     public WordCounter() {
@@ -56,9 +59,6 @@ public class WordCounter {
 
             Node second = listedLetters.poll();
 
-             //System.out.println(second.getChar()+" "+ first.getChar()+ "  "+(first.getWeight()+second.getWeight()));
-
-
 
             Node tree = new Leaf(null, (first.getWeight() + second.getWeight()));
 
@@ -82,41 +82,49 @@ public class WordCounter {
         Node node = listedLetters.poll();
 
         if (node.left() != null) {
+            String p = "0";
 
-            binaryCalculations(node.left(), "0");
+            binaryCalculations(node.left(),  p);
         }
 
         if (node.right() != null) {
-
-            binaryCalculations(node.right(), "1");
+            String p = "1";
+            binaryCalculations(node.right(), p);
         }
+
 
     }
 
     public void binaryCalculations(Node node, String code) {
+
         if (node.right() == null && node.left() == null) {
+
             coded.put(node.getChar(), code);
         }
 
 
         if (node.left() != null) {
-            String temp = code;
-            binaryCalculations(node.left(), temp += "0");
+
+
+            String pass = code +"0";
+            binaryCalculations(node.left(), pass);
         }
 
         if (node.right() != null) {
-            String temp = code;
-            binaryCalculations(node.right(), temp += "1");
+
+            String pass = code +"1";
+            binaryCalculations(node.right(), pass);
         }
 
 
     }
+
 
     public HashMap<Character, Integer> getWordsCounted() {
         return wordsCounted;
     }
 
-    public HashMap<Character, CharSequence> getCoded() {
+    public HashMap<Character, String> getCoded() {
         return coded;
     }
 
@@ -124,37 +132,6 @@ public class WordCounter {
         return listedLetters;
     }
 
-    /*
-    static void print2DUtil(Node root, int space) {
-        // Base case
-        if (root == null) {
-            return;
-        }
-
-        // Increase distance between levels
-        space += COUNT;
-
-        // Process right child first
-        print2DUtil(root.right(), space);
-
-        // Print current node after space
-        // count
-        System.out.print("\n");
-        for (int i = COUNT; i < space; i++) {
-            System.out.print(" ");
-            System.out.print(root + "\n");
-        }
-
-        // Process left child
-        print2DUtil(root.left(), space);
-    }
-
-    // Wrapper over print2DUtil()
-    static void print2D(Node root) {
-        // Pass initial space count as 0
-        print2DUtil(root, 0);
-    }
-*/
 
 
 }

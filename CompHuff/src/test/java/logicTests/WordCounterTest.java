@@ -40,7 +40,7 @@ public class WordCounterTest {
 
     @Test
     public void mostLettersWithLeastBinary(){
-        String sentence = "aaaabbbccceed";
+        String sentence = "I dont like this at all hjelp";
 
         testC.count(sentence);
 
@@ -50,22 +50,26 @@ public class WordCounterTest {
 
         int numbers = 100;
         char lowestChar = 'z';
-        for(char c:testC.getCoded().keySet()){
+
+        for(Character c:testC.getCoded().keySet()){
+
 
            if(numbers > testC.getCoded().get(c).length()){
 
                numbers = testC.getCoded().get(c).length();
+
+
                lowestChar = c;
            }
 
         }
 
-        assertEquals('a',lowestChar);
+        assertEquals(' ',lowestChar);
     }
 
     @Test
-    public void mostLettersWithMostBinary(){
-        String sentence = "aaaabbbccceed";
+    public void leastLettersWithMostBinary(){
+        String sentence = "this generator better be right";
 
         testC.count(sentence);
 
@@ -75,7 +79,7 @@ public class WordCounterTest {
         int numbers = 0;
         char lowestChar = 'z';
 
-        for(char c:testC.getCoded().keySet()){
+        for(Character c:testC.getCoded().keySet()){
 
             if(numbers < testC.getCoded().get(c).length()){
 
@@ -84,8 +88,9 @@ public class WordCounterTest {
             }
 
         }
+        System.out.println(lowestChar);
 
-        assertEquals('d',lowestChar);
+        assertTrue(('s'  == lowestChar || 'n' == lowestChar || 'a' == lowestChar));
     }
 
 
