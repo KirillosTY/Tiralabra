@@ -14,18 +14,19 @@ public class Main {
         Decoder boo = new Decoder();
 
         double time= System.nanoTime();
-        String inputFromFile = test.loadingTextFile("500kb.txt");
-        if(inputFromFile.matches("[a-zA-Z]")){
-            count(inputFromFile);
-        }else {
-            System.out.println("File is not valid");
+        String inputFromFile = test.loadingTextFile("100kb.txt");
+        if(inputFromFile.matches("^\\p{ASCII}*")){
+
+        } else {
+            System.out.println("File contains disallowed letters");
         }
+        count(inputFromFile);
         test.setCoded(counter.getCoded());
         test.setCodes(counter.getCodes());
         System.out.println(counter.getCodes());
 
         test.writingCodedBinary(inputFromFile,"meh.txt");
-        boo.readFile("500kb.txt");
+        boo.readFile("meh.txt");
         System.out.println((System.nanoTime()-time)/1e9+" koko krääsä");
 
 
