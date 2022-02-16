@@ -6,11 +6,10 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class FileWriter implements FileAccess, Serializable {
+public class Encoder implements FileAccess, Serializable {
 
     private HashMap<Character, byte[]> coded;
     public HashMap<Character, String> codes;
-    private String readText = "";
 
     private int maxBytes = 0;
 
@@ -19,21 +18,20 @@ public class FileWriter implements FileAccess, Serializable {
     private ByteBuffer buffMe;
 
 
-    public String loadingTextFile() {
+    public String loadingTextFile(String path) {
 
         try {
 
-            File read = new File("100kb.txt");
+            File read = new File(path);
             Scanner reader = new Scanner(read);
 
             reader.useDelimiter("\\Z");
 
-            readText = reader.next();
-            return readText;
+            return reader.next();
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("File not found");
         }
 
 
@@ -41,7 +39,7 @@ public class FileWriter implements FileAccess, Serializable {
     }
 
 
-    public void writingCodedBinary(String compressText) {
+    public void writingCodedBinary(String compressText, String writePath) {
 
         try {
             buffMe = ByteBuffer.allocate(2);
@@ -52,30 +50,21 @@ public class FileWriter implements FileAccess, Serializable {
             maxBytes += 16;
 
             for (char chara : coded.keySet()) {
+
                 buffMe = ByteBuffer.allocate(4);
                 char c = chara;
                 output.write(c);
                 output.write((byte) codes.get(chara).length()); //length of the binary.
+
                 buffMe.put(coded.get(chara));
-
                 output.writeBytes(buffMe.array());
-
-
                 maxBytes += 8 + 8 + 32;
 
             }
 
-
             checkSizeAndBuildBinary(compressText);
-            ByteArrayOutputStream encoder = new ByteArrayOutputStream();
             writingLetter(output);
-
-            maxBytes+=32;
-            buffMe =  ByteBuffer.allocate(Integer.BYTES);
-            buffMe.putInt(maxBytes);
-            encoder.write(buffMe.array(),0,4);// the reserved space for the maximum bytes the file will hold.
-            encoder.write(output.toByteArray());
-            encoder.writeTo(new FileOutputStream("meh.txt"));
+            finalWriterEncoder(output, writePath);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,9 +73,24 @@ public class FileWriter implements FileAccess, Serializable {
 
     }
 
+    public void finalWriterEncoder(ByteArrayOutputStream output, String writePath){
+
+       try {
+           maxBytes+=32;
+           buffMe =  ByteBuffer.allocate(Integer.BYTES);
+           buffMe.putInt(maxBytes);
+           ByteArrayOutputStream encoder = new ByteArrayOutputStream();
+           encoder.write(buffMe.array(), 0, 4);// the reserved space for the maximum bytes the file will hold.
+           encoder.write(output.toByteArray());
+           encoder.writeTo(new FileOutputStream(writePath));
+       } catch (IOException e) {
+           e.printStackTrace();
+       }
+    }
+
     public void checkSizeAndBuildBinary(String compressText){
 
-        tst = new StringBuilder(Integer.MAX_VALUE-3);
+        tst = new StringBuilder(0);
 
         for (int i = 0; i < compressText.length(); i++) {
 
@@ -133,23 +137,6 @@ public class FileWriter implements FileAccess, Serializable {
     }
 
 
-    public void readFile() {
-
-        try {
-            ByteArrayInputStream input = new ByteArrayInputStream(new FileInputStream("meh.txt").readAllBytes());
-            int binaryCount =  0 ;
-            for(byte b: input.readNBytes(4)){
-                binaryCount = (binaryCount << 8) +(b & 0xFF);
-            }
-
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
     public void setCoded(HashMap<Character, byte[]> coded) {
 
         this.coded = coded;
@@ -157,6 +144,18 @@ public class FileWriter implements FileAccess, Serializable {
     public void setCodes(HashMap<Character, String> codes) {
 
         this.codes = codes;
+    }
+
+    public int getMaxBytes() {
+        return maxBytes;
+    }
+
+    public StringBuilder getTst() {
+        return tst;
+    }
+
+    public ByteBuffer getBuffMe() {
+        return buffMe;
     }
 
 }

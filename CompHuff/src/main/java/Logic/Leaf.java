@@ -4,7 +4,7 @@ public class Leaf implements Node, Comparable<Node> {
 
     public Node right;
     public Node left;
-    private Character letter;
+    public Character letter;
     private int weight;
 
 
@@ -40,7 +40,7 @@ public class Leaf implements Node, Comparable<Node> {
 
     @Override
     public String toString() {
-        return letter+" "+weight;
+        return letter + " " + weight;
     }
 
 

@@ -2,7 +2,6 @@ package Logic;
 
 import java.nio.ByteBuffer;
 import java.util.BitSet;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
@@ -12,21 +11,23 @@ import java.util.PriorityQueue;
 
 public class WordCounter {
     private HashMap<Character, Integer> wordsCounted;
-
-    private HashMap<Character, String> coded;
+    private HashMap<Character, String> codes;
+    private HashMap<Character, byte[]> coded;
     private PriorityQueue<Node> listedLetters;
+
+    public Node headOfTree;
 
     public WordCounter() {
 
         wordsCounted = new HashMap<>();
         coded = new HashMap<>();
         listedLetters = new PriorityQueue<>();
-
+        codes = new HashMap<>();
     }
 
 
     /**
-     *  Counts all the characters of the text and adds them to a map, then moves the data to a  PriorityQueue.
+     * Counts all the characters of the text and adds them to a map, then moves the data to a  PriorityQueue.
      *
      * @param text
      */
@@ -69,51 +70,52 @@ public class WordCounter {
         }
 
 
-
     }
 
     /**
-     *
      * This handles the binary value each char will have.
      */
 
     public void binaryCalculations() {
 
-        Node node = listedLetters.poll();
+        headOfTree = listedLetters.poll();
 
-        if (node.left() != null) {
-            String p = "0";
+        if (headOfTree.left() != null) {
 
-            binaryCalculations(node.left(),  p);
+
+            binaryCalculations(headOfTree.left(), 0b0,"0");
         }
 
-        if (node.right() != null) {
-            String p = "1";
-            binaryCalculations(node.right(), p);
+        if (headOfTree.right() != null) {
+
+
+            binaryCalculations(headOfTree.right(), 0b1,"1");
         }
 
 
     }
 
-    public void binaryCalculations(Node node, String code) {
+    public void binaryCalculations(Node node, int javaIsShit, String a) {
 
         if (node.right() == null && node.left() == null) {
-
-            coded.put(node.getChar(), code);
+            ByteBuffer b = ByteBuffer.allocate(4);
+            b.putInt(javaIsShit);
+            codes.put(node.getChar(),a);
+            coded.put(node.getChar(),b.array() );
         }
 
 
         if (node.left() != null) {
 
+            int binary = (javaIsShit<<1);
 
-            String pass = code +"0";
-            binaryCalculations(node.left(), pass);
+            binaryCalculations(node.left(), binary,a+"0" );
         }
 
         if (node.right() != null) {
+            int binary = (javaIsShit<<1) +1;
 
-            String pass = code +"1";
-            binaryCalculations(node.right(), pass);
+            binaryCalculations(node.right(), binary,a+"1" );
         }
 
 
@@ -124,14 +126,16 @@ public class WordCounter {
         return wordsCounted;
     }
 
-    public HashMap<Character, String> getCoded() {
+    public HashMap<Character, byte[]> getCoded() {
         return coded;
+    }
+    public HashMap<Character, String> getCodes() {
+        return codes;
     }
 
     public PriorityQueue<Node> getListedLetters() {
         return listedLetters;
     }
-
 
 
 }
