@@ -17,3 +17,8 @@ Managed to do the start of the job: first 64 bits are reserved for the size of t
 + treebuilding: 8 bits to count how many characters there are + 8 bits for the chars themselves + 8 bits for the length of the binary + 16 bits for the binary itself.
 I have an vague idea how to read the huffman tree from these and decode, wont be ready on time though.
 Also added checkstyle and Jacoco and some tests. 
+
+
+## week 4
+
+Currently all tests for encoding and decoding is done. It also works fine for any ASCII containing text file. Next up is a fast build of a simple file chooser GUI and then moving onto ziv lempel algorithm. Im a week behind, but will be catching up this and next week hopefully. 
