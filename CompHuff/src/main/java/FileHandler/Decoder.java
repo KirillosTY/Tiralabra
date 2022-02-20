@@ -4,7 +4,6 @@ import Logic.Leaf;
 
 import java.io.*;
 import java.nio.ByteBuffer;
-import java.util.PriorityQueue;
 
 public class Decoder {
 
@@ -25,6 +24,11 @@ public class Decoder {
         textFormer = new StringBuilder();
         treeFormed = new Leaf(null, 0);
     }
+
+    /**
+     *
+     * @param pathToFile path of where the t
+     */
 
     public void readFile(String pathToFile) {
 
@@ -146,7 +150,7 @@ public class Decoder {
     public void writeTextToFile(String pathToWriteTo) {
         try {
 
-            PrintStream writeOut = new PrintStream(new FileOutputStream("Transformed.txt", true));
+            PrintStream writeOut = new PrintStream(new FileOutputStream(pathToWriteTo, true));
             writeOut.print(textFormer);
 
 

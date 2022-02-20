@@ -3,7 +3,7 @@ package logicTests;
 import FileHandler.Decoder;
 import FileHandler.Encoder;
 import Logic.Node;
-import Logic.WordCounter;
+import Logic.HuffmanGenerator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +22,7 @@ public class DecoderTest {
 
     static String path;
 
-    static WordCounter WC;
+    static HuffmanGenerator WC;
 
     @BeforeAll
     public  static  void startFile(){
@@ -37,7 +37,7 @@ public class DecoderTest {
 
         Encoder createFile = new Encoder();
         testCoder = new Decoder();
-        WC = new WordCounter();
+        WC = new HuffmanGenerator();
         WC.count("NFTs are a scam. adding some lorem ipsum would help a little");
         WC.treeForming();
         WC.binaryCalculations();

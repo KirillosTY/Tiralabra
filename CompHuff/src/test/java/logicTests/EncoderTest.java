@@ -1,10 +1,9 @@
 package logicTests;
 
 import FileHandler.Encoder;
-import Logic.WordCounter;
+import Logic.HuffmanGenerator;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -21,7 +20,7 @@ public class EncoderTest {
 
     static String path;
 
-    static WordCounter WC;
+    static HuffmanGenerator WC;
 
     @BeforeAll
     public  static  void startFile(){
@@ -32,7 +31,7 @@ public class EncoderTest {
             delete.delete();
         }
         testCoder = new Encoder();
-        WC = new WordCounter();
+        WC = new HuffmanGenerator();
         WC.count("NFTs are a scam. adding some lorem ipsum would help a little");
         WC.treeForming();
         WC.binaryCalculations();

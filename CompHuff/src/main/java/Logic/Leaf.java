@@ -1,5 +1,9 @@
 package Logic;
 
+/**
+ * This class is a single leaf that represents the leafs in a huffman tree. Leaves with a null value on  letter
+ * are treated as branches.
+ */
 public class Leaf implements Node, Comparable<Node> {
 
     public Node right;

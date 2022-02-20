@@ -1,20 +1,20 @@
 package logicTests;
 
 import Logic.Node;
-import Logic.WordCounter;
+import Logic.HuffmanGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class WordCounterTest {
+public class HuffmanGeneratorTest {
 
-    private WordCounter testC;
+    private HuffmanGenerator testC;
 
     @BeforeEach
     public void initialize() {
-        testC = new WordCounter();
+        testC = new HuffmanGenerator();
 
 
     }
@@ -99,7 +99,7 @@ public class WordCounterTest {
         Node first = testC.getListedLetters().poll();
 
 
-        WordCounter testCTwo = new WordCounter();
+        HuffmanGenerator testCTwo = new HuffmanGenerator();
 
         sentence = "ccctxxxbbbeec";
 
@@ -124,7 +124,7 @@ public class WordCounterTest {
         testC.treeForming();
 
         Node first = testC.getListedLetters().poll();
-        WordCounter testCTwo = new WordCounter();
+        HuffmanGenerator testCTwo = new HuffmanGenerator();
 
         sentence = "zzzzxxxbbbeeeadwawaedaec";
 

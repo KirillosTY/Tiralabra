@@ -1,7 +1,6 @@
 package Logic;
 
 import java.nio.ByteBuffer;
-import java.util.BitSet;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
@@ -9,7 +8,7 @@ import java.util.PriorityQueue;
  * This class handles the forming of the Huffman tree
  */
 
-public class WordCounter {
+public class HuffmanGenerator {
     private HashMap<Character, Integer> wordsCounted;
     private HashMap<Character, String> codes;
     private HashMap<Character, byte[]> coded;
@@ -17,7 +16,7 @@ public class WordCounter {
 
     public Node headOfTree;
 
-    public WordCounter() {
+    public HuffmanGenerator() {
 
         wordsCounted = new HashMap<>();
         coded = new HashMap<>();
@@ -73,7 +72,7 @@ public class WordCounter {
     }
 
     /**
-     * This handles the binary value each char will have.
+     * This handles the start of the methods that handles the  binary value which each char will have.
      */
 
     public void binaryCalculations() {
@@ -95,12 +94,19 @@ public class WordCounter {
 
     }
 
-    public void binaryCalculations(Node node, int javaIsShit, String a) {
+    /**
+     *
+     * @param node leaf to be searched through
+     * @param javaIsShit current bit combination
+     * @param bit contains current bit representation as String.
+     */
+
+    public void binaryCalculations(Node node, int javaIsShit, String bit) {
 
         if (node.right() == null && node.left() == null) {
             ByteBuffer b = ByteBuffer.allocate(4);
             b.putInt(javaIsShit);
-            codes.put(node.getChar(),a);
+            codes.put(node.getChar(), bit);
             coded.put(node.getChar(),b.array() );
         }
 
@@ -109,13 +115,13 @@ public class WordCounter {
 
             int binary = (javaIsShit<<1);
 
-            binaryCalculations(node.left(), binary,a+"0" );
+            binaryCalculations(node.left(), binary,bit+"0" );
         }
 
         if (node.right() != null) {
             int binary = (javaIsShit<<1) +1;
 
-            binaryCalculations(node.right(), binary,a+"1" );
+            binaryCalculations(node.right(), binary,bit+"1" );
         }
 
 

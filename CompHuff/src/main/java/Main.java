@@ -1,10 +1,10 @@
 import FileHandler.Decoder;
 import FileHandler.Encoder;
-import Logic.WordCounter;
+import Logic.HuffmanGenerator;
 
 public class Main {
 
-    private static WordCounter counter;
+    private static HuffmanGenerator counter;
 
     public static void main(String[] args) {
 
@@ -35,7 +35,7 @@ public class Main {
 
     public static void count(String text) {
         double time= System.nanoTime();
-        counter = new WordCounter();
+        counter = new HuffmanGenerator();
         counter.count(text);
         System.out.println((System.nanoTime()-time)/1e9+" laskenta");
         time= System.nanoTime();

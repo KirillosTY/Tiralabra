@@ -6,6 +6,13 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Scanner;
 
+
+/**
+ * This class handles the encoding of the text based on the huffman tree generated.
+ * The first 64 bits are designed for the maximum bit size.
+ *
+ */
+
 public class Encoder implements FileAccess, Serializable {
 
     private HashMap<Character, byte[]> coded;
@@ -17,6 +24,11 @@ public class Encoder implements FileAccess, Serializable {
 
     private ByteBuffer buffMe;
 
+    /**
+     * This loads the text file and transforms it to the text. On failure prints out file not found.
+     * @param path the path where the file is read from
+     * @return String representation of the text read from the file.
+     */
 
     public String loadingTextFile(String path) {
 
@@ -37,6 +49,13 @@ public class Encoder implements FileAccess, Serializable {
 
         return null;
     }
+
+    /**
+     *This method takes a string  
+     *
+     * @param compressText
+     * @param writePath
+     */
 
 
     public void writingCodedBinary(String compressText, String writePath) {
