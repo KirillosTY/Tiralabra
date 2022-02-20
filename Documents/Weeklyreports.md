@@ -21,4 +21,11 @@ Also added checkstyle and Jacoco and some tests.
 
 ## week 4
 Hours used: 15.
+
 Currently all tests for encoding and decoding is done. It also works fine for any ASCII containing text file. Next up is a fast build of a simple file chooser GUI, adding javadoc and other documentation and then moving onto ziv lempel algorithm. Im a week behind, but will be catching up this and next week hopefully. 
+
+
+## week 5
+Hours used: 9.
+
+Writed javadoc for the decoder, encoder and HuffmanGenerator, with some commentary too. Will be writing now the GUI and reading on Lempel Ziv, also doing the peer review within today. Bit late(pun intended), but will be catching up next week.
