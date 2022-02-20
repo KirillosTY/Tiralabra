@@ -9,7 +9,6 @@ import java.util.Scanner;
 
 /**
  * This class handles the encoding of the text based on the huffman tree generated.
- * The first 64 bits are designed for the maximum bit size.
  *
  */
 
@@ -51,10 +50,17 @@ public class Encoder implements FileAccess, Serializable {
     }
 
     /**
-     *This method takes a string  
+     *This method takes a string and starts to encode it with the generated Huffman tree,
+     * and writes only the huffman tree, before passing the rest of the encoding to other methods.
+     * It uses two byteArrayStreams to so that adding the final bit count to the start
+     * will be possible after all conversion is done. First 64 bits to tell the length of the file.
+     * Then 16 bits to tell how many letters will be read the next. Letters are read first
+     * followed by their length and frequency.
+     * the character and length both have 8 bits, while the frequency is 16 bits.
      *
-     * @param compressText
-     * @param writePath
+     *
+     * @param compressText  text to be encoded.
+     * @param writePath  path where to write the text file.
      */
 
 
@@ -75,15 +81,15 @@ public class Encoder implements FileAccess, Serializable {
                 output.write(c);
                 output.write((byte) codes.get(chara).length()); //length of the binary.
 
-                buffMe.put(coded.get(chara));
+                buffMe.put(coded.get(chara)); // Frequency of the character
                 output.writeBytes(buffMe.array());
                 maxBytes += 8 + 8 + 32;
 
             }
 
-            checkSizeAndBuildBinary(compressText);
-            writingLetter(output);
-            finalWriterEncoder(output, writePath);
+            checkSizeAndBuildBinary(compressText); // builds the string
+            writingLetter(output); // Transforms the string
+            finalWriterEncoder(output, writePath); //Writes it to file.
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -92,20 +98,10 @@ public class Encoder implements FileAccess, Serializable {
 
     }
 
-    public void finalWriterEncoder(ByteArrayOutputStream output, String writePath){
-
-       try {
-           maxBytes+=32;
-           buffMe =  ByteBuffer.allocate(Integer.BYTES);
-           buffMe.putInt(maxBytes);
-           ByteArrayOutputStream encoder = new ByteArrayOutputStream();
-           encoder.write(buffMe.array(), 0, 4);// the reserved space for the maximum bytes the file will hold.
-           encoder.write(output.toByteArray());
-           encoder.writeTo(new FileOutputStream(writePath));
-       } catch (IOException e) {
-           e.printStackTrace();
-       }
-    }
+    /**
+     * Builds the binary representation of the encoded text in string.
+     * @param compressText text to be encoded
+     */
 
     public void checkSizeAndBuildBinary(String compressText){
 
@@ -119,9 +115,37 @@ public class Encoder implements FileAccess, Serializable {
 
     }
 
+    /**
+     * Handles the final writing where the maximum bits are added to the start of the file.
+     * Then writes the file with the given output stream to the location given.
+     * @param output bits to be written.
+     * @param writePath location and file name to be written.
+     */
+
+    public void finalWriterEncoder(ByteArrayOutputStream output, String writePath){
+
+        try {
+            maxBytes+=32;
+            buffMe =  ByteBuffer.allocate(Integer.BYTES);
+            buffMe.putInt(maxBytes);
+            ByteArrayOutputStream encoder = new ByteArrayOutputStream();
+            encoder.write(buffMe.array(), 0, 4);// the reserved space for the maximum bytes the file will hold.
+            encoder.write(output.toByteArray()); //the tree and encoded text.
+            encoder.writeTo(new FileOutputStream(writePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Transforms the binary string to actual binary and writes to the output stream.
+     * handles bit shifting. A 1 bit is added to start of every 64 bits to be written, to not lose any Zeroes.
+     * @param output  takes a ByteArrayOutputStream that writes the bits to file.
+     */
+
     public void writingLetter(ByteArrayOutputStream output){
 
-        long binary=0b1;
+        long binary=0b1; // the 64 bit is reserved to make sure some 0 bits are not lost.
 
         ByteBuffer shit;
 
