@@ -56,7 +56,7 @@ public class Encoder implements FileAccess, Serializable {
      * will be possible after all conversion is done. First 64 bits to tell the length of the file.
      * Then 16 bits to tell how many letters will be read the next. Letters are read first
      * followed by their length and frequency.
-     * the character and length both have 8 bits, while the frequency is 16 bits.
+     * the character and length both have 8 bits, while the frequency is 32 bits.
      *
      *
      * @param compressText  text to be encoded.

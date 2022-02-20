@@ -26,8 +26,8 @@ public class Decoder {
     }
 
     /**
-     *
-     * @param pathToFile path of where the t
+     *This opens the encoded file and starts to decode it.
+     * @param pathToFile path from where the file is read from.
      */
 
     public void readFile(String pathToFile) {
@@ -38,20 +38,20 @@ public class Decoder {
             ByteArrayInputStream input = new ByteArrayInputStream(new FileInputStream(pathToFile).readAllBytes());
             maxBytes = 32;
             for (byte b : input.readNBytes(4)) {
-                maxBytes = (maxBytes << 8) + (b & 0xFF);
+                maxBytes = (maxBytes << 8) + (b & 0xFF); // first 32 bits tell the bit count.
             }
             numberOfLeaves = buffMe.put(input.readNBytes(2)).getShort(0);
             for (int i = 0; i < numberOfLeaves; i++) {
                 buffMe = ByteBuffer.allocate(4);
-                char c = (char) input.readNBytes(1)[0];
-                byte length = input.readNBytes(1)[0];
-                buffMe.put(input.readNBytes(4));
+                char c = (char) input.readNBytes(1)[0]; // char
+                byte length = input.readNBytes(1)[0]; // lenght of the char
+                buffMe.put(input.readNBytes(4)); // frequency of the char.
 
-                int inShort = buffMe.getInt(0);
+                int inInt = buffMe.getInt(0);
                 StringBuilder addZeros = new StringBuilder();
-                String binary = Integer.toBinaryString(inShort);
+                String binary = Integer.toBinaryString(inInt);
 
-                if (binary.length() < length) {
+                if (binary.length() < length) { //0 are added to the front the approriate amount to match length.
                     for (int z = 0; z < (length - binary.length()); z++) {
                         addZeros.append(0);
                     }
@@ -60,7 +60,7 @@ public class Decoder {
                     addZeros.append(binary.substring(binary.length() - length));
                 }
 
-                formTree(treeFormed, c, addZeros.toString(), -1);
+                formTree(treeFormed, c, addZeros.toString(), -1); // Builds a leaf into the tree with the given binary.
 
 
             }
@@ -72,6 +72,13 @@ public class Decoder {
 
     }
 
+    /**
+     *  Builds a leaf into the tree with the given parameters. If a branch is not available to move through it creates it and then passes through it.
+     * @param leaf  Leaf to be moved through
+     * @param character Character to be written
+     * @param binary Binary String to be followed to created the leaf.
+     * @param index Length of the String to know when to stop.
+     */
     public void formTree(Leaf leaf, char character, String binary, int index) {
 
 
@@ -107,6 +114,12 @@ public class Decoder {
 
     }
 
+    /**
+     * Decodes the binary string to actual text by using the generated tree. Every 64th bit is ignored, because it is a fill bit
+     * to make sure 0 are not lost. This method only receives the input after the bits concerning byte count and Huffman tree are read.
+     * @param input encoded file.
+     * @throws IOException if you are not good this will pop out. Definently not a programming error. Take some responsibility.
+     */
 
     public void formText(ByteArrayInputStream input) throws IOException {
 
@@ -147,6 +160,10 @@ public class Decoder {
 
     }
 
+    /**
+     * Takes the decoded text and writes it to file.
+     * @param pathToWriteTo location of where to write the file.
+     */
     public void writeTextToFile(String pathToWriteTo) {
         try {
 
