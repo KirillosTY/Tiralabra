@@ -156,7 +156,7 @@ public class Decoder {
                 tempLeaf = (Leaf) tempLeaf.right;
             }
         }
-        writeTextToFile("");
+        writeTextToFile("t.txt");
 
     }
 

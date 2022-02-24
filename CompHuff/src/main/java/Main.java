@@ -1,6 +1,7 @@
 import FileHandler.Decoder;
 import FileHandler.Encoder;
 import Logic.HuffmanGenerator;
+import Logic.LZW;
 
 public class Main {
 
@@ -14,7 +15,7 @@ public class Main {
         Decoder boo = new Decoder();
 
         double time= System.nanoTime();
-        String inputFromFile = test.loadingTextFile("100kb.txt");
+        /* String inputFromFile = test.loadingTextFile("500kb.txt");
         if(inputFromFile.matches("^\\p{ASCII}*")){
 
         } else {
@@ -28,7 +29,12 @@ public class Main {
         test.writingCodedBinary(inputFromFile,"meh.txt");
         boo.readFile("meh.txt");
         System.out.println((System.nanoTime()-time)/1e9+" koko krääsä");
+        */
 
+        LZW bobo = new LZW();
+
+
+        System.out.println(bobo.decompress(bobo.compress(test.loadingTextFile("500kb.txt"))));
 
     }
 

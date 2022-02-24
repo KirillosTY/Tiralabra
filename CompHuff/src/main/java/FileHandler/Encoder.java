@@ -4,6 +4,7 @@ package FileHandler;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -16,6 +17,8 @@ public class Encoder implements FileAccess, Serializable {
 
     private HashMap<Character, byte[]> coded;
     public HashMap<Character, String> codes;
+
+    List<Integer> listLZW;
 
     private int maxBytes = 0;
 
@@ -121,6 +124,7 @@ public class Encoder implements FileAccess, Serializable {
      * @param output bits to be written.
      * @param writePath location and file name to be written.
      */
+
 
     public void finalWriterEncoder(ByteArrayOutputStream output, String writePath){
 
