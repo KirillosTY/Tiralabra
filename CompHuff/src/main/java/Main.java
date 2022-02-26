@@ -32,9 +32,11 @@ public class Main {
         */
 
         LZW bobo = new LZW();
-
-
-        System.out.println(bobo.decompress(bobo.compress(test.loadingTextFile("500kb.txt"))));
+        test.setListLZW(bobo.compress(test.loadingTextFile("100kb.txt")));
+        test.encoderWriterLZW("meme.bin");
+        boo.readFIleLZW("meme.bin");
+        System.out.println(boo.listLZW);
+        System.out.println(bobo.decompress(boo.listLZW));
 
     }
 

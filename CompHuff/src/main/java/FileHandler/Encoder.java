@@ -18,7 +18,7 @@ public class Encoder implements FileAccess, Serializable {
     private HashMap<Character, byte[]> coded;
     public HashMap<Character, String> codes;
 
-    List<Integer> listLZW;
+    public List<Integer> listLZW;
 
     private int maxBytes = 0;
 
@@ -118,13 +118,38 @@ public class Encoder implements FileAccess, Serializable {
 
     }
 
+
+    public void encoderWriterLZW(String writePath)  {
+      //  System.out.println(listLZW);
+        ByteBuffer buffMe = ByteBuffer.allocate(4);
+     try {
+
+         FileOutputStream output = new FileOutputStream(writePath);
+
+         for (int code : listLZW) {
+             buffMe = ByteBuffer.allocate(4);
+             byte[] b = buffMe.putInt( code).array();
+
+             output.write(b);
+
+         }
+
+
+
+     } catch (Exception e){
+         System.out.println("You fucked up");
+     }
+
+
+    }
+
+
     /**
      * Handles the final writing where the maximum bits are added to the start of the file.
      * Then writes the file with the given output stream to the location given.
      * @param output bits to be written.
      * @param writePath location and file name to be written.
      */
-
 
     public void finalWriterEncoder(ByteArrayOutputStream output, String writePath){
 
@@ -183,6 +208,10 @@ public class Encoder implements FileAccess, Serializable {
 
     }
 
+    public void setListLZW(List<Integer> LZW){
+
+        this.listLZW = LZW;
+    }
 
     public void setCoded(HashMap<Character, byte[]> coded) {
 

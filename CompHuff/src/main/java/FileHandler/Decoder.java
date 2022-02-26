@@ -1,15 +1,20 @@
 package FileHandler;
 
 import Logic.Leaf;
+import jdk.swing.interop.SwingInterOpUtils;
 
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Decoder {
 
     private int maxBytes = 0;
     private short numberOfLeaves = 0;
 
+    public ArrayList<Integer> listLZW;
     private ByteBuffer buffMe;
     private StringBuilder binaryFormer;
     private StringBuilder textFormer;
@@ -23,12 +28,31 @@ public class Decoder {
     public Decoder() {
         textFormer = new StringBuilder();
         treeFormed = new Leaf(null, 0);
+        listLZW = new ArrayList<>();
     }
 
     /**
      *This opens the encoded file and starts to decode it.
      * @param pathToFile path from where the file is read from.
      */
+
+    public void readFIleLZW(String pathToFile){
+        listLZW = new ArrayList<>();
+         buffMe = ByteBuffer.allocate(4);
+        try{
+            ByteArrayInputStream input = new ByteArrayInputStream(new FileInputStream(pathToFile).readAllBytes());
+
+            while(input.available()>0){
+                buffMe = ByteBuffer.allocate(4);
+                buffMe.put(input.readNBytes(4));
+                listLZW.add(buffMe.getInt(0));
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     public void readFile(String pathToFile) {
 
