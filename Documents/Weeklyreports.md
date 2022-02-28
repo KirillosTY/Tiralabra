@@ -29,3 +29,7 @@ Currently all tests for encoding and decoding is done. It also works fine for an
 Hours used: 9.
 
 Writed javadoc for the decoder, encoder and HuffmanGenerator, with some commentary too. Will be writing now the GUI and reading on Lempel Ziv, also doing the peer review within today. Bit late(pun intended), but will be catching up next week.
+
+## week 6
+Hours used: 10.
+Both lwz and huff work now. Started on the gui, which is almost done. Will be writing tests and doing documentation after that.
