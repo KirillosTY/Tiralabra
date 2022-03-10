@@ -1,7 +1,7 @@
 package logicTests;
 
-import Logic.Node;
 import Logic.HuffmanGenerator;
+import Logic.Node;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -116,7 +116,7 @@ public class HuffmanGeneratorTest {
     }
 
     @Test
-    public void DifferentLengthTextDifferentLettersSameTrees() {
+    public void differentLengthTextDifferentLettersSameTrees() {
         String sentence = "aaaabbbccceed";
 
         testC.count(sentence);

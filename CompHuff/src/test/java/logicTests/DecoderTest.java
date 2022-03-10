@@ -1,9 +1,9 @@
 package logicTests;
 
-import FileHandler.Decoder;
 import FileHandler.BinaryWriter;
-import Logic.Node;
+import FileHandler.Decoder;
 import Logic.HuffmanGenerator;
+import Logic.Node;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -22,28 +22,27 @@ public class DecoderTest {
 
     static String path;
 
-    static HuffmanGenerator WC;
+    static HuffmanGenerator wC;
 
     @BeforeAll
-    public  static  void startFile(){
+    public static void startFile() {
         path = "decoderTest.txt";
 
 
-
         File delete = new File(path);
-        if(delete!= null){
+        if (delete != null) {
             delete.delete();
         }
 
         BinaryWriter createFile = new BinaryWriter();
         testCoder = new Decoder();
-        WC = new HuffmanGenerator();
-        WC.count("NFTs are a scam. adding some lorem ipsum would help a little");
-        WC.treeForming();
-        WC.binaryCalculations();
-        createFile.setCodes(WC.getCodes());
-        createFile.setCoded(WC.getCoded());
-        createFile.writingCodedBinary("NFTs are a scam. adding some lorem ipsum would help a little","decoderTest.txt");
+        wC = new HuffmanGenerator();
+        wC.count("NFTs are a scam. adding some lorem ipsum would help a little");
+        wC.treeForming();
+        wC.binaryCalculations();
+        createFile.setCodes(wC.getCodes());
+        createFile.setCoded(wC.getCoded());
+        createFile.writingCodedBinary("NFTs are a scam. adding some lorem ipsum would help a little", "decoderTest.txt");
         try {
 
             PrintStream writeOut = new PrintStream(new FileOutputStream(path, true));
@@ -53,21 +52,21 @@ public class DecoderTest {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        testCoder.readFile("decoderTest.txt");
+        testCoder.readFileHuff("decoderTest.txt", "testDone.txt");
     }
 
     @Test
-    public void loadingFileAndLeavesMatch(){
+    public void loadingFileAndLeavesMatch() {
 
-        assertEquals(testCoder.getNumberOfLeaves(), WC.getCodes().keySet().size());
+        assertEquals(testCoder.getNumberOfLeaves(), wC.getCodes().keySet().size());
     }
 
 
     @Test
-    public void testingTree(){
+    public void testingTree() {
 
 
-        assertTrue(same(testCoder.treeFormed,WC.headOfTree));
+        assertTrue(same(testCoder.treeFormed, wC.headOfTree));
     }
 
     public boolean same(Node node1, Node node2) {

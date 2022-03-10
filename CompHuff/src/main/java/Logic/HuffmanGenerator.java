@@ -9,12 +9,11 @@ import java.util.PriorityQueue;
  */
 
 public class HuffmanGenerator {
+    public Node headOfTree;
     private HashMap<Character, Integer> wordsCounted;
     private HashMap<Character, String> codes;
     private HashMap<Character, byte[]> coded;
     private PriorityQueue<Node> listedLetters;
-
-    public Node headOfTree;
 
     public HuffmanGenerator() {
 
@@ -32,7 +31,6 @@ public class HuffmanGenerator {
      */
 
     public void count(String text) {
-
 
 
         for (int i = 0; i < text.length(); i++) {
@@ -83,23 +81,22 @@ public class HuffmanGenerator {
         if (headOfTree.left() != null) {
 
 
-            binaryCalculations(headOfTree.left(), 0b0,"0");
+            binaryCalculations(headOfTree.left(), 0b0, "0");
         }
 
         if (headOfTree.right() != null) {
 
 
-            binaryCalculations(headOfTree.right(), 0b1,"1");
+            binaryCalculations(headOfTree.right(), 0b1, "1");
         }
 
 
     }
 
     /**
-     *
-     * @param node leaf to be searched through
+     * @param node       leaf to be searched through
      * @param javaIsShit current bit combination
-     * @param bit contains current bit representation as String.
+     * @param bit        contains current bit representation as String.
      */
 
     public void binaryCalculations(Node node, int javaIsShit, String bit) {
@@ -108,21 +105,21 @@ public class HuffmanGenerator {
             ByteBuffer b = ByteBuffer.allocate(4);
             b.putInt(javaIsShit);
             codes.put(node.getChar(), bit);
-            coded.put(node.getChar(),b.array() );
+            coded.put(node.getChar(), b.array());
         }
 
 
         if (node.left() != null) {
 
-            int binary = (javaIsShit<<1);
+            int binary = (javaIsShit << 1);
 
-            binaryCalculations(node.left(), binary,bit+"0" );
+            binaryCalculations(node.left(), binary, bit + "0");
         }
 
         if (node.right() != null) {
-            int binary = (javaIsShit<<1) +1;
+            int binary = (javaIsShit << 1) + 1;
 
-            binaryCalculations(node.right(), binary,bit+"1" );
+            binaryCalculations(node.right(), binary, bit + "1");
         }
 
 
@@ -136,6 +133,7 @@ public class HuffmanGenerator {
     public HashMap<Character, byte[]> getCoded() {
         return coded;
     }
+
     public HashMap<Character, String> getCodes() {
         return codes;
     }

@@ -20,21 +20,21 @@ public class BinaryWriterTest {
 
     static String path;
 
-    static HuffmanGenerator WC;
+    static HuffmanGenerator wC;
 
     @BeforeAll
-    public  static  void startFile(){
+    public static void startFile() {
         path = "testSet.txt";
 
         File delete = new File(path);
-        if(delete!= null){
+        if (delete != null) {
             delete.delete();
         }
         testCoder = new BinaryWriter();
-        WC = new HuffmanGenerator();
-        WC.count("NFTs are a scam. adding some lorem ipsum would help a little");
-        WC.treeForming();
-        WC.binaryCalculations();
+        wC = new HuffmanGenerator();
+        wC.count("NFTs are a scam. adding some lorem ipsum would help a little");
+        wC.treeForming();
+        wC.binaryCalculations();
 
 
         try {
@@ -50,47 +50,46 @@ public class BinaryWriterTest {
         testCoder = new BinaryWriter();
 
     }
+
+    @AfterAll
+    public static void deleteExtra() {
+
+        File delete = new File(path);
+        if (delete != null) {
+            delete.delete();
+        }
+    }
+
     @Test
-    public void failureToLoadfile(){
+    public void failureToLoadfile() {
 
         assertFalse(false, testCoder.loadingTextFile("iodwaawpdiwop"));
     }
+
     @Test
-    public void loadingFile(){
+    public void loadingFile() {
 
         assertEquals(testCoder.loadingTextFile(path), "NFTs are a scam. adding some lorem ipsum would help a little");
 
 
     }
 
-
-
     @Test
     public void binaryCode() {
 
-        testCoder.setCoded(WC.getCoded());
-        testCoder.setCodes(WC.getCodes());
-        testCoder.writingCodedBinary("NFT","testSetBin.txt");
-        assertEquals("101001101000111000",testCoder.getTst().toString());
+        testCoder.setCoded(wC.getCoded());
+        testCoder.setCodes(wC.getCodes());
+        testCoder.writingCodedBinary("NFT", "testSetBin.txt");
+        assertEquals("101001101000111000", testCoder.getTst().toString());
     }
 
     @Test
     public void binaryCodeLonger() {
 
-        testCoder.setCoded(WC.getCoded());
-        testCoder.setCodes(WC.getCodes());
-        testCoder.writingCodedBinary("NFTsgn.Twww","testSetBin.txt");
-        assertEquals("101001101000111000100011101111110101110110111000111001111001111001",testCoder.getTst().toString());
-    }
-
-
-    @AfterAll
-    public static void deleteExtra(){
-
-        File delete = new File(path);
-        if(delete!= null){
-            delete.delete();
-        }
+        testCoder.setCoded(wC.getCoded());
+        testCoder.setCodes(wC.getCodes());
+        testCoder.writingCodedBinary("NFTsgn.Twww", "testSetBin.txt");
+        assertEquals("101001101000111000100011101111110101110110111000111001111001111001", testCoder.getTst().toString());
     }
 
 }

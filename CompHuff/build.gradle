@@ -11,7 +11,7 @@ version '1.0-SNAPSHOT'
 
 javafx {
     version = "11"
-    modules = [ 'javafx.controls', 'javafx.fxml' ]
+    modules = ['javafx.controls', 'javafx.fxml']
 }
 mainClassName = 'Main'
 

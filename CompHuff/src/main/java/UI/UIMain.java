@@ -4,18 +4,24 @@ import FileHandler.BinaryWriter;
 import FileHandler.Decoder;
 import Logic.HuffmanGenerator;
 import Logic.LZW;
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.*;
+
+import javafx.scene.image.Image;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+
+import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -26,13 +32,15 @@ public class UIMain extends Application {
     @FXML
     private RadioButton huffPuff;
     @FXML
-    private RadioButton LZW;
+    private RadioButton lZW;
     @FXML
     private Button openFile;
     @FXML
-    private Button encode;
+    public Button encode;
     @FXML
-    private Button decode;
+    public Button decode;
+    @FXML
+    private HBox buttons;
     @FXML
     private Label openNameLoc;
     @FXML
@@ -59,25 +67,23 @@ public class UIMain extends Application {
     private LZW lempeli;
 
 
-
-
-
-    public UIMain()  {
+    public UIMain() {
         huffOrNo = true;
         writer = new BinaryWriter();
         reader = new Decoder();
         hufferPuff = new HuffmanGenerator();
-        lempeli  = new LZW();
+        lempeli = new LZW();
+
     }
 
     @FXML
-    public void  fileOpener() throws IOException {
+    public void fileOpener() throws IOException {
 
         openFileLoc = new FilePointer();
         openFileLoc.openLocation((Stage) openFile.getScene().getWindow());
         openNameLoc.setText(openFileLoc.pathToOpen);
         saveNameLoc.setText(openFileLoc.pathToSave);
-
+        settings();
 
     }
 
@@ -87,6 +93,7 @@ public class UIMain extends Application {
         try {
             Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("UIMain.fxml"));
 
+            Image a = new Image("pepe.jpg");
             Scene set = new Scene(root);
 
             primaryStage.setTitle("File compressor 9001");
@@ -95,71 +102,133 @@ public class UIMain extends Application {
 
             primaryStage.show();
 
-        } catch (IOException e){
+
+        } catch (IOException e) {
 
         }
 
 
-
     }
 
-    public void encode(){
-        writer = new BinaryWriter();
-        double time = System.nanoTime();
+    public void encode() {
+
+        String pathChosen = openNameLoc.getText();
 
 
-        textRead = writer.loadingTextFile(Paths.get(openFileLoc.pathToOpen).toAbsolutePath().toString());
-        System.out.println("Lukeminen: "+ ((System.nanoTime()-time)/1e9));
-        if(huffPuff.isSelected()){
+        if (!pathChosen.equals("Choose a file first!") && !pathChosen.equals("") && !pathChosen.equals("null")) {
+            disableButtons();
+            writer = new BinaryWriter();
+            double time = System.nanoTime();
 
-            time = System.nanoTime();
-            hufferPuff.count(textRead);
-            hufferPuff.treeForming();
-            hufferPuff.binaryCalculations();
-            System.out.println("Puu yms: "+ ((System.nanoTime()-time)/1e9));
-            time = System.nanoTime();
-            writer.setCoded(hufferPuff.getCoded());
-            writer.setCodes(hufferPuff.getCodes());
-            writer.writingCodedBinary(textRead, Paths.get(openFileLoc.pathToSave).toAbsolutePath().toString());
-            System.out.println("Kirjoitus: "+ ((System.nanoTime()-time)/1e9));
-        } else {
-
-            writer.setListLZW(lempeli.compress(textRead));
-            writer.encoderWriterLZW(openFileLoc.pathToSave);
+            textRead = writer.loadingTextFile(Paths.get(openFileLoc.pathToOpen).toAbsolutePath().toString());
+            System.out.println("Lukeminen: " + ((System.nanoTime() - time) / 1e9));
+            if (huffPuff.isSelected()) {
 
 
+                hufferPuff.count(textRead);
+                hufferPuff.treeForming();
+                hufferPuff.binaryCalculations();
+
+
+                writer.setCoded(hufferPuff.getCoded());
+                writer.setCodes(hufferPuff.getCodes());
+                writer.writingCodedBinary(textRead, Paths.get(openFileLoc.pathToSave).toAbsolutePath().toString());
+
+                openFileLoc.pathToOpen = openFileLoc.pathToSave;
+                openFileLoc.pathToSave = "";
+                openNameLoc.setText(openFileLoc.pathToSave);
+                saveNameLoc.setText("");
+            } else {
+
+                writer.setListLZW(lempeli.compress(textRead));
+                writer.encoderWriterLZW(openFileLoc.pathToSave);
+                openFileLoc.pathToOpen = openFileLoc.pathToSave;
+                openFileLoc.pathToSave = "";
+                openNameLoc.setText(openFileLoc.pathToSave);
+                saveNameLoc.setText("");
+
+            }
         }
 
     }
 
-    public void decode(){
+    public void disableButtons(){
+        encode.setDisable(true);
+        decode.setDisable(true);
+        encode.setStyle("-fx-text-fill: white; -fx-background-color: darkred;-fx-background-radius: 1em 1em 1em 1em;-fx-effect: innershadow( gaussian ,red, 5,0.2, 3,3);");
+        decode.setStyle("-fx-text-fill: white; -fx-background-color: darkred;-fx-background-radius: 1em 1em 1em 1em;-fx-effect: innershadow( gaussian ,red, 5,0.2, 3,3);");
+    }
 
-        if(huffPuff.isSelected()){
+    public void decode() {
 
-           reader.readFileHuff(Paths.get(openFileLoc.pathToOpen).toAbsolutePath().toString(),
-                   Paths.get(openFileLoc.pathToSave).toAbsolutePath().toString());
+        String pathChosen = openNameLoc.getText();
+
+        if (!pathChosen.equals("Choose a file first!") && !pathChosen.equals("") && !pathChosen.equals("null")) {
+            disableButtons();
+            if (huffPuff.isSelected()) {
+
+                reader.readFileHuff(Paths.get(openFileLoc.pathToOpen).toAbsolutePath().toString(),
+                        Paths.get(openFileLoc.pathToSave).toAbsolutePath().toString());
 
 
-        } else {
+                openNameLoc.setText("");
+                saveNameLoc.setText("");
+            } else {
 
-            reader.readFileLZW(Paths.get(openFileLoc.pathToOpen).toAbsolutePath().toString(),
-                    Paths.get(openFileLoc.pathToSave).toAbsolutePath().toString());
+                reader.readFileLZW(Paths.get(openFileLoc.pathToOpen).toAbsolutePath().toString(),
+                        Paths.get(openFileLoc.pathToSave).toAbsolutePath().toString());
+
+                openNameLoc.setText("");
+                saveNameLoc.setText("");
+            }
 
         }
+    }
+
+    public void checkIfDoneReleaseButtons(){
+
+        new AnimationTimer() {
+            long time = 0;
+
+
+            @Override
+            public void handle(long now) {
+
+                if(now-time > 10000 ){
+
+                    if(writer.jobDone && reader.workDone){
+                        encode.setDisable(false);
+                        decode.setDisable(false);
+                        decode.setStyle("-fx-text-fill: white; -fx-background-color: #408905;-fx-background-radius: 1em 1em 1em 1em;" +
+                                "-fx-effect: innershadow( gaussian ,green,5 , 0.2 , 3, 3)");
+                        encode.setStyle("-fx-text-fill: white; -fx-background-color: #408905;-fx-background-radius: 1em 1em 1em 1em;" +
+                                "-fx-effect: innershadow( gaussian ,green,5 , 0.2 , 3, 3)");
+                    } else {
+                        disableButtons();
+                    }
+
+                     time = now;
+                }
+
+
+            }
+        }.start();
+
+
 
     }
 
-    public void settings(){
+    public void settings() {
 
-        Platform.runLater(()->{
-
-
-        });
+        Platform.runLater((new Runnable() {
+            @Override
+            public void run() {
+                checkIfDoneReleaseButtons();
+            }
+        }));
 
 
     }
-
-
 
 
 }

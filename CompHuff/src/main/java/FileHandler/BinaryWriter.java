@@ -1,6 +1,8 @@
 package FileHandler;
 
 
+import UI.UIMain;
+
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -10,31 +12,32 @@ import java.util.Scanner;
 
 /**
  * This class handles the encoding of the text based on the huffman tree generated.
- *
  */
 
 public class BinaryWriter implements FileAccess, Serializable {
 
-    private HashMap<Character, byte[]> coded;
     public HashMap<Character, String> codes;
-
     public List<Integer> listLZW;
-
+    private HashMap<Character, byte[]> coded;
     private int maxBytes = 0;
 
     private StringBuilder tst;
 
     private ByteBuffer buffMe;
 
+    public boolean jobDone = true;
+
     /**
      * This loads the text file and transforms it to the text. On failure prints out file not found.
+     *
      * @param path the path where the file is read from
      * @return String representation of the text read from the file.
      */
 
     public String loadingTextFile(String path) {
+            jobDone = false;
 
-        try {
+            try {
 
             File read = new File(path);
             Scanner reader = new Scanner(read);
@@ -42,7 +45,8 @@ public class BinaryWriter implements FileAccess, Serializable {
             reader.useDelimiter("\\Z");
             String text = reader.next();
             reader.close();
-            if(text.length() == 0){
+
+            if (text.length() == 0) {
                 throw new Exception("file is empty");
             }
             return text;
@@ -57,7 +61,7 @@ public class BinaryWriter implements FileAccess, Serializable {
     }
 
     /**
-     *This method takes a string and starts to encode it with the generated Huffman tree,
+     * This method takes a string and starts to encode it with the generated Huffman tree,
      * and writes only the huffman tree, before passing the rest of the encoding to other methods.
      * It uses two byteArrayStreams to so that adding the final bit count to the start
      * will be possible after all conversion is done. First 64 bits to tell the length of the file.
@@ -65,15 +69,15 @@ public class BinaryWriter implements FileAccess, Serializable {
      * followed by their length and frequency.
      * the character and length both have 8 bits, while the frequency is 32 bits.
      *
-     *
-     * @param compressText  text to be encoded.
-     * @param writePath  path where to write the text file.
+     * @param compressText text to be encoded.
+     * @param writePath    path where to write the text file.
      */
 
 
     public void writingCodedBinary(String compressText, String writePath) {
 
         try {
+            jobDone = false;
             buffMe = ByteBuffer.allocate(2);
             ByteArrayOutputStream output = new ByteArrayOutputStream();
             buffMe.putShort((short) coded.keySet().size()); // Number of letters in tree
@@ -98,6 +102,7 @@ public class BinaryWriter implements FileAccess, Serializable {
             writingLetter(output); // Transforms the string
             finalWriterEncoder(output, writePath); //Writes it to file.
 
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -107,10 +112,11 @@ public class BinaryWriter implements FileAccess, Serializable {
 
     /**
      * Builds the binary representation of the encoded text in string.
+     *
      * @param compressText text to be encoded
      */
 
-    public void checkSizeAndBuildBinary(String compressText){
+    public void checkSizeAndBuildBinary(String compressText) {
 
         tst = new StringBuilder(0);
 
@@ -123,29 +129,31 @@ public class BinaryWriter implements FileAccess, Serializable {
     }
 
 
-    public void encoderWriterLZW(String writePath)  {
-      //  System.out.println(listLZW);
+    public void encoderWriterLZW(String writePath) {
+
         buffMe = ByteBuffer.allocate(4);
-     try {
 
-         FileOutputStream output = new FileOutputStream(writePath);
+        try {
+            jobDone = false;
 
-         byte[] b = buffMe.putInt(0b10000000000000000000000000000001).array();
-         output.write(b);
+            FileOutputStream output = new FileOutputStream(writePath);
 
-         for (int code : listLZW) {
-             buffMe = ByteBuffer.allocate(4);
-             b = buffMe.putInt( code).array();
+            byte[] b = buffMe.putInt(0b10000000000000000000000000000001).array();
+            output.write(b);
 
-             output.write(b);
+            for (int code : listLZW) {
+                buffMe = ByteBuffer.allocate(4);
+                b = buffMe.putInt(code).array();
 
-         }
+                output.write(b);
 
+            }
 
-         output.close();
-     } catch (Exception e){
-         System.out.println("You fucked up");
-     }
+            output.close();
+            jobDone = true;
+        } catch (Exception e) {
+            System.out.println("You fucked up");
+        }
 
 
     }
@@ -154,22 +162,26 @@ public class BinaryWriter implements FileAccess, Serializable {
     /**
      * Handles the final writing where the maximum bits are added to the start of the file.
      * Then writes the file with the given output stream to the location given.
-     * @param output bits to be written.
+     *
+     * @param output    bits to be written.
      * @param writePath location and file name to be written.
      */
 
-    public void finalWriterEncoder(ByteArrayOutputStream output, String writePath){
+    public void finalWriterEncoder(ByteArrayOutputStream output, String writePath) {
 
         try {
-            maxBytes+=32;
-            buffMe =  ByteBuffer.allocate(Integer.BYTES);
+            maxBytes += 32;
+            buffMe = ByteBuffer.allocate(Integer.BYTES);
             buffMe.putInt(0b11111111111111111111111111111110);
             ByteArrayOutputStream encoder = new ByteArrayOutputStream();
-            encoder.write(buffMe.array(), 0, 4);// the reserved space for the maximum bytes the file will hold.
+            encoder.write(buffMe.array(), 0, 4); // the reserved space for the maximum bytes the file will hold.
             encoder.write(output.toByteArray()); //the tree and encoded text.
             encoder.writeTo(new FileOutputStream(writePath));
             output.close();
             encoder.close();
+            jobDone = true;
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -178,37 +190,38 @@ public class BinaryWriter implements FileAccess, Serializable {
     /**
      * Transforms the binary string to actual binary and writes to the output stream.
      * handles bit shifting. A 1 bit is added to start of every 64 bits to be written, to not lose any Zeroes.
-     * @param output  takes a ByteArrayOutputStream that writes the bits to file.
+     *
+     * @param output takes a ByteArrayOutputStream that writes the bits to file.
      */
 
-    public void writingLetter(ByteArrayOutputStream output){
+    public void writingLetter(ByteArrayOutputStream output) {
 
-        long binary=0b1; // the 64 bit is reserved to make sure some 0 bits are not lost.
+        long binary = 0b1; // the 64 bit is reserved to make sure some 0 bits are not lost.
 
         ByteBuffer shit;
 
-        for(int i = 0; i < tst.length(); i++){
+        for (int i = 0; i < tst.length(); i++) {
 
-            if(tst.charAt(i) == '1'){
-                binary = (binary << 1)+1;
+            if (tst.charAt(i) == '1') {
+                binary = (binary << 1) + 1;
 
-            }else {
+            } else {
                 binary = (binary << 1);
             }
 
-            if( Long.toBinaryString(binary).length()%64 ==0 ){
+            if (Long.toBinaryString(binary).length() % 64 == 0) {
                 shit = ByteBuffer.allocate(8);
                 shit.putLong(binary);
                 output.writeBytes(shit.array());
 
-                binary=0b1;
-                maxBytes+=64;
-            } else if(i+1 == tst.length()){
+                binary = 0b1;
+                maxBytes += 64;
+            } else if (i + 1 == tst.length()) {
                 shit = ByteBuffer.allocate(8);
                 shit.putLong(binary);
                 output.writeBytes(shit.array());
 
-                maxBytes+=tst.length()%64;
+                maxBytes += tst.length() % 64;
 
             }
 
@@ -217,15 +230,16 @@ public class BinaryWriter implements FileAccess, Serializable {
 
     }
 
-    public void setListLZW(List<Integer> LZW){
+    public void setListLZW(List<Integer> lZW) {
 
-        this.listLZW = LZW;
+        this.listLZW = lZW;
     }
 
     public void setCoded(HashMap<Character, byte[]> coded) {
 
         this.coded = coded;
     }
+
     public void setCodes(HashMap<Character, String> codes) {
 
         this.codes = codes;

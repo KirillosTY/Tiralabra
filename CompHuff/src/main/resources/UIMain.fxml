@@ -2,40 +2,40 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<GridPane prefHeight="480.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="UI.UIMain" hgap="70">
+<?import javafx.scene.image.Image?>
+<GridPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="480.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/11"
+          fx:controller="UI.UIMain" hgap="70" >
 
-   <Label alignment="CENTER" lineSpacing="3.0" prefHeight="70.0" prefWidth="598.0"
-          text="Welcome!  &#10;This is a simple compressor. Done as a student project. &#10;You can choose from 2 different packaging methods to decide how your text will be encoded or decoded:"
-          textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS" wrapText="true"/>
+    <Label alignment="CENTER" lineSpacing="3.0" prefHeight="70.0" prefWidth="598.0"
+           text="Welcome!  &#10;This is a simple compressor. Done as a student project. &#10;You can choose from 2 different packaging methods to decide how your text will be encoded or decoded:"
+           textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS" wrapText="true"/>
 
-   <HBox alignment="CENTER" GridPane.rowIndex="1" prefHeight="90">
-      <fx:define>
-         <ToggleGroup fx:id="algChooser"/>
-      </fx:define>
-      <RadioButton fx:id="huffPuff" mnemonicParsing="false" selected="true" toggleGroup="$algChooser"   prefHeight="30.0" prefWidth="120.0"
-                   text="Huffman" GridPane.rowIndex="1"/>
-      <RadioButton fx:id="LZW"  mnemonicParsing="false" toggleGroup="$algChooser" prefHeight="30.0" prefWidth="120.0"
-                   text="Lempel-Ziv-Welch" GridPane.rowIndex="1"/>
-   </HBox>
+    <HBox alignment="CENTER" GridPane.rowIndex="1" prefHeight="90">
+        <fx:define>
+            <ToggleGroup fx:id="algChooser"/>
+        </fx:define>
+        <RadioButton fx:id="huffPuff" mnemonicParsing="false" selected="true" toggleGroup="$algChooser"
+                     prefHeight="30.0" prefWidth="120.0"
+                     text="Huffman" GridPane.rowIndex="1"/>
+        <RadioButton fx:id="lZW" mnemonicParsing="false" toggleGroup="$algChooser" prefHeight="30.0" prefWidth="120.0"
+                     text="Lempel-Ziv-Welch" GridPane.rowIndex="1"/>
+    </HBox>
 
-   <VBox alignment="CENTER" GridPane.rowIndex="2" spacing="30" >
-      <Button text="Open file"  fx:id="openFile" onAction="#fileOpener" prefWidth="120" prefHeight="30"/>
-      <Label text="Open from: "  prefHeight="10"/>
-      <Label text="Choose a file first!" fx:id="openNameLoc"  prefHeight="20"/>
-      <Label text="Save to: "  prefHeight="10"/>
-      <Label text="Choose a file first!" fx:id="saveNameLoc"  prefHeight="20"/>
-
-
-   </VBox>
-
-   <HBox alignment="CENTER" GridPane.rowIndex="3" spacing="30" prefHeight="90" >
-      <Button text="Encode file" prefWidth="120" fx:id="encode" onAction="#encode" prefHeight="30"/>
-      <Button text="Decode file" prefWidth="120" fx:id="decode" onAction="#decode" prefHeight="30"/>
-
-   </HBox>
+    <VBox alignment="CENTER" GridPane.rowIndex="2" spacing="30">
+        <Button text="Open file" fx:id="openFile" onAction="#fileOpener" prefWidth="120" prefHeight="30"/>
+        <Label text="Open from: " prefHeight="10"/>
+        <Label text="Choose a file first!" fx:id="openNameLoc" prefHeight="20"/>
+        <Label text="Save to: " prefHeight="10"/>
+        <Label text="Choose a file first!" fx:id="saveNameLoc" prefHeight="20"/>
 
 
+    </VBox>
+
+    <HBox alignment="CENTER" fx:id="buttons" GridPane.rowIndex="3" spacing="30" prefHeight="90">
+        <Button text="Encode file" prefWidth="120" fx:id="encode" onAction="#encode" prefHeight="30"/>
+        <Button text="Decode file" prefWidth="120" fx:id="decode" onAction="#decode" prefHeight="30"/>
+
+    </HBox>
 
 
 </GridPane>

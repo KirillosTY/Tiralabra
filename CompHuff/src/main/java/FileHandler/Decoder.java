@@ -9,44 +9,47 @@ import java.util.ArrayList;
 
 public class Decoder {
 
+    public ArrayList<Integer> listLZW;
+    public Leaf treeFormed;
     private int maxBytes = 0;
     private short numberOfLeaves = 0;
-
-    public ArrayList<Integer> listLZW;
     private ByteBuffer buffMe;
     private StringBuilder binaryFormer;
     private StringBuilder textFormer;
-    public  Leaf treeFormed;
+
+    public boolean workDone = true;
+
+    public Decoder() {
+        textFormer = new StringBuilder();
+        treeFormed = new Leaf(null, 0);
+        listLZW = new ArrayList<>();
+
+    }
 
     public StringBuilder getTextFormer() {
 
         return textFormer;
     }
 
-    public Decoder() {
-        textFormer = new StringBuilder();
-        treeFormed = new Leaf(null, 0);
-        listLZW = new ArrayList<>();
-    }
-
     /**
-     *This opens the encoded file and starts to decode it.
+     * This opens the encoded file and starts to decode it.
+     *
      * @param pathToFile path from where the file is read from.
      */
 
 
-
-    public void readFileLZW(String pathToFile, String pathToWrite){
-        LZW  decomp = new LZW();
+    public void readFileLZW(String pathToFile, String pathToWrite) {
+        LZW decomp = new LZW();
         listLZW = new ArrayList<>();
+        workDone = false;
         try {
             ByteArrayInputStream input = new ByteArrayInputStream(new FileInputStream(pathToFile).readAllBytes());
             buffMe = ByteBuffer.allocate(4);
             buffMe.put(input.readNBytes(4));
-            if(buffMe.getInt(0) != 0b10000000000000000000000000000001){
+            if (buffMe.getInt(0) != 0b10000000000000000000000000000001) {
                 throw new IOException("The fuck are you feeding me");
             }
-            while(input.available()>0) {
+            while (input.available() > 0) {
                 buffMe = ByteBuffer.allocate(4);
                 buffMe.put(input.readNBytes(4));
                 listLZW.add(buffMe.getInt(0));
@@ -55,15 +58,17 @@ public class Decoder {
             writeTextToFile(pathToWrite);
 
             input.close();
-        }catch (IOException e){
+
+        } catch (IOException e) {
             System.out.println(e);
         }
 
     }
+
     public void readFileHuff(String pathToFile, String pathToWrite) {
 
         buffMe = ByteBuffer.allocate(20);
-
+        workDone = false;
         try {
 
             ByteArrayInputStream input = new ByteArrayInputStream(new FileInputStream(pathToFile).readAllBytes());
@@ -71,8 +76,7 @@ public class Decoder {
             for (byte b : input.readNBytes(4)) {
                 maxBytes = (maxBytes << 8) + (b & 0xFF); // first 32 bits tells if its done by huff compression.
             }
-
-            if(maxBytes != 0b11111111111111111111111111111110){
+            if (maxBytes != 0b11111111111111111111111111111110) {
                 throw new IOException("Why are you trying to feed me some random shit?");
             }
             numberOfLeaves = buffMe.put(input.readNBytes(2)).getShort(0);
@@ -80,7 +84,7 @@ public class Decoder {
                 buffMe = ByteBuffer.allocate(4);
                 char c = (char) input.readNBytes(1)[0]; // char
                 byte length = input.readNBytes(1)[0]; // lenght of the char
-                buffMe.put(input.readNBytes(4)); // frequency of the char.
+                buffMe.put(input.readNBytes(4)); // binary of the char.
 
                 int inInt = buffMe.getInt(0);
                 StringBuilder addZeros = new StringBuilder();
@@ -97,7 +101,6 @@ public class Decoder {
 
                 formTree(treeFormed, c, addZeros.toString(), -1); // Builds a leaf into the tree with the given binary.
 
-
             }
             formText(input);
             writeTextToFile(pathToWrite);
@@ -109,11 +112,12 @@ public class Decoder {
     }
 
     /**
-     *  Builds a leaf into the tree with the given parameters. If a branch is not available to move through it creates it and then passes through it.
-     * @param leaf  Leaf to be moved through
+     * Builds a leaf into the tree with the given parameters. If a branch is not available to move through it creates it and then passes through it.
+     *
+     * @param leaf      Leaf to be moved through
      * @param character Character to be written
-     * @param binary Binary String to be followed to created the leaf.
-     * @param index Length of the String to know when to stop.
+     * @param binary    Binary String to be followed to created the leaf.
+     * @param index     Length of the String to know when to stop.
      */
     public void formTree(Leaf leaf, char character, String binary, int index) {
 
@@ -153,6 +157,7 @@ public class Decoder {
     /**
      * Decodes the binary string to actual text by using the generated tree. Every 64th bit is ignored, because it is a fill bit
      * to make sure 0 are not lost. This method only receives the input after the bits concerning byte count and Huffman tree are read.
+     *
      * @param input encoded file.
      * @throws IOException if you are not good this will pop out. Definently not a programming error. Take some responsibility.
      */
@@ -198,6 +203,7 @@ public class Decoder {
 
     /**
      * Takes the decoded text and writes it to file.
+     *
      * @param pathToWriteTo location of where to write the file.
      */
     public void writeTextToFile(String pathToWriteTo) {
@@ -207,6 +213,8 @@ public class Decoder {
             writeOut.print(textFormer);
 
             writeOut.close();
+            textFormer = new StringBuilder();
+            workDone = true;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
