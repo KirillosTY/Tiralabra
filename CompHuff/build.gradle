@@ -2,11 +2,18 @@ plugins {
     id 'java'
     id 'jacoco'
     id 'checkstyle'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.10'
 }
 
 group 'org.example'
 version '1.0-SNAPSHOT'
 
+javafx {
+    version = "11"
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
+mainClassName = 'Main'
 
 repositories {
     mavenCentral()

@@ -1,13 +1,11 @@
 package FileHandler;
 
+import Logic.LZW;
 import Logic.Leaf;
-import jdk.swing.interop.SwingInterOpUtils;
 
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class Decoder {
 
@@ -36,33 +34,46 @@ public class Decoder {
      * @param pathToFile path from where the file is read from.
      */
 
-    public void readFIleLZW(String pathToFile){
-        listLZW = new ArrayList<>();
-         buffMe = ByteBuffer.allocate(4);
-        try{
-            ByteArrayInputStream input = new ByteArrayInputStream(new FileInputStream(pathToFile).readAllBytes());
 
-            while(input.available()>0){
+
+    public void readFileLZW(String pathToFile, String pathToWrite){
+        LZW  decomp = new LZW();
+        listLZW = new ArrayList<>();
+        try {
+            ByteArrayInputStream input = new ByteArrayInputStream(new FileInputStream(pathToFile).readAllBytes());
+            buffMe = ByteBuffer.allocate(4);
+            buffMe.put(input.readNBytes(4));
+            if(buffMe.getInt(0) != 0b10000000000000000000000000000001){
+                throw new IOException("The fuck are you feeding me");
+            }
+            while(input.available()>0) {
                 buffMe = ByteBuffer.allocate(4);
                 buffMe.put(input.readNBytes(4));
                 listLZW.add(buffMe.getInt(0));
-
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            textFormer.append(decomp.decompress(listLZW));
+            writeTextToFile(pathToWrite);
+
+            input.close();
+        }catch (IOException e){
+            System.out.println(e);
         }
 
     }
-
-    public void readFile(String pathToFile) {
+    public void readFileHuff(String pathToFile, String pathToWrite) {
 
         buffMe = ByteBuffer.allocate(20);
 
         try {
+
             ByteArrayInputStream input = new ByteArrayInputStream(new FileInputStream(pathToFile).readAllBytes());
             maxBytes = 32;
             for (byte b : input.readNBytes(4)) {
-                maxBytes = (maxBytes << 8) + (b & 0xFF); // first 32 bits tell the bit count.
+                maxBytes = (maxBytes << 8) + (b & 0xFF); // first 32 bits tells if its done by huff compression.
+            }
+
+            if(maxBytes != 0b11111111111111111111111111111110){
+                throw new IOException("Why are you trying to feed me some random shit?");
             }
             numberOfLeaves = buffMe.put(input.readNBytes(2)).getShort(0);
             for (int i = 0; i < numberOfLeaves; i++) {
@@ -89,6 +100,7 @@ public class Decoder {
 
             }
             formText(input);
+            writeTextToFile(pathToWrite);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -180,7 +192,7 @@ public class Decoder {
                 tempLeaf = (Leaf) tempLeaf.right;
             }
         }
-        writeTextToFile("t.txt");
+
 
     }
 
@@ -194,7 +206,7 @@ public class Decoder {
             PrintStream writeOut = new PrintStream(new FileOutputStream(pathToWriteTo, true));
             writeOut.print(textFormer);
 
-
+            writeOut.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

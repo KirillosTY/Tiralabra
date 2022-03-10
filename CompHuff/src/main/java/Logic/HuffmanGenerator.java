@@ -34,6 +34,7 @@ public class HuffmanGenerator {
     public void count(String text) {
 
 
+
         for (int i = 0; i < text.length(); i++) {
 
             wordsCounted.put(text.charAt(i), wordsCounted.getOrDefault(text.charAt(i), 0) + 1);

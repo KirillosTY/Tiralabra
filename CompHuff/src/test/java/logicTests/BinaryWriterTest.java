@@ -1,6 +1,6 @@
 package logicTests;
 
-import FileHandler.Encoder;
+import FileHandler.BinaryWriter;
 import Logic.HuffmanGenerator;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,9 +14,9 @@ import java.io.PrintStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class EncoderTest {
+public class BinaryWriterTest {
 
-    static Encoder testCoder;
+    static BinaryWriter testCoder;
 
     static String path;
 
@@ -30,7 +30,7 @@ public class EncoderTest {
         if(delete!= null){
             delete.delete();
         }
-        testCoder = new Encoder();
+        testCoder = new BinaryWriter();
         WC = new HuffmanGenerator();
         WC.count("NFTs are a scam. adding some lorem ipsum would help a little");
         WC.treeForming();
@@ -47,7 +47,7 @@ public class EncoderTest {
             e.printStackTrace();
         }
 
-        testCoder = new Encoder();
+        testCoder = new BinaryWriter();
 
     }
     @Test

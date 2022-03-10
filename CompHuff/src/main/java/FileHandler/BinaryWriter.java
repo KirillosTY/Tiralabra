@@ -13,7 +13,7 @@ import java.util.Scanner;
  *
  */
 
-public class Encoder implements FileAccess, Serializable {
+public class BinaryWriter implements FileAccess, Serializable {
 
     private HashMap<Character, byte[]> coded;
     public HashMap<Character, String> codes;
@@ -40,8 +40,12 @@ public class Encoder implements FileAccess, Serializable {
             Scanner reader = new Scanner(read);
 
             reader.useDelimiter("\\Z");
-
-            return reader.next();
+            String text = reader.next();
+            reader.close();
+            if(text.length() == 0){
+                throw new Exception("file is empty");
+            }
+            return text;
 
 
         } catch (Exception e) {
@@ -121,21 +125,24 @@ public class Encoder implements FileAccess, Serializable {
 
     public void encoderWriterLZW(String writePath)  {
       //  System.out.println(listLZW);
-        ByteBuffer buffMe = ByteBuffer.allocate(4);
+        buffMe = ByteBuffer.allocate(4);
      try {
 
          FileOutputStream output = new FileOutputStream(writePath);
 
+         byte[] b = buffMe.putInt(0b10000000000000000000000000000001).array();
+         output.write(b);
+
          for (int code : listLZW) {
              buffMe = ByteBuffer.allocate(4);
-             byte[] b = buffMe.putInt( code).array();
+             b = buffMe.putInt( code).array();
 
              output.write(b);
 
          }
 
 
-
+         output.close();
      } catch (Exception e){
          System.out.println("You fucked up");
      }
@@ -156,11 +163,13 @@ public class Encoder implements FileAccess, Serializable {
         try {
             maxBytes+=32;
             buffMe =  ByteBuffer.allocate(Integer.BYTES);
-            buffMe.putInt(maxBytes);
+            buffMe.putInt(0b11111111111111111111111111111110);
             ByteArrayOutputStream encoder = new ByteArrayOutputStream();
             encoder.write(buffMe.array(), 0, 4);// the reserved space for the maximum bytes the file will hold.
             encoder.write(output.toByteArray()); //the tree and encoded text.
             encoder.writeTo(new FileOutputStream(writePath));
+            output.close();
+            encoder.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

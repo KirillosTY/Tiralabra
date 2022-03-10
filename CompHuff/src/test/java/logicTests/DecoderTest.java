@@ -1,7 +1,7 @@
 package logicTests;
 
 import FileHandler.Decoder;
-import FileHandler.Encoder;
+import FileHandler.BinaryWriter;
 import Logic.Node;
 import Logic.HuffmanGenerator;
 import org.junit.jupiter.api.BeforeAll;
@@ -35,7 +35,7 @@ public class DecoderTest {
             delete.delete();
         }
 
-        Encoder createFile = new Encoder();
+        BinaryWriter createFile = new BinaryWriter();
         testCoder = new Decoder();
         WC = new HuffmanGenerator();
         WC.count("NFTs are a scam. adding some lorem ipsum would help a little");

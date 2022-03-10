@@ -1,58 +1,32 @@
-import FileHandler.Decoder;
-import FileHandler.Encoder;
 import Logic.HuffmanGenerator;
-import Logic.LZW;
+import UI.UIMain;
+import javafx.application.Application;
+
+import java.util.List;
 
 public class Main {
 
     private static HuffmanGenerator counter;
 
+    private static List<Integer> listLZW;
+
+    private static String pathToOpen;
+
+    private static String pathToSave;
+
+    private static UIMain startGUI;
+
+
     public static void main(String[] args) {
 
 
-        Encoder test = new Encoder();
+        Application.launch(UIMain.class);
 
-        Decoder boo = new Decoder();
 
-        double time= System.nanoTime();
-        /* String inputFromFile = test.loadingTextFile("500kb.txt");
-        if(inputFromFile.matches("^\\p{ASCII}*")){
-
-        } else {
-            System.out.println("File contains disallowed letters");
-        }
-        count(inputFromFile);
-        test.setCoded(counter.getCoded());
-        test.setCodes(counter.getCodes());
-        System.out.println(counter.getCodes());
-
-        test.writingCodedBinary(inputFromFile,"meh.txt");
-        boo.readFile("meh.txt");
-        System.out.println((System.nanoTime()-time)/1e9+" koko krääsä");
-        */
-
-        LZW bobo = new LZW();
-        test.setListLZW(bobo.compress(test.loadingTextFile("100kb.txt")));
-        test.encoderWriterLZW("meme.bin");
-        boo.readFIleLZW("meme.bin");
-        System.out.println(boo.listLZW);
-        System.out.println(bobo.decompress(boo.listLZW));
 
     }
 
 
-    public static void count(String text) {
-        double time= System.nanoTime();
-        counter = new HuffmanGenerator();
-        counter.count(text);
-        System.out.println((System.nanoTime()-time)/1e9+" laskenta");
-        time= System.nanoTime();
-        counter.treeForming();
-        System.out.println((System.nanoTime()-time)/1e9+" puun muodostus");
-        time= System.nanoTime();
-        counter.binaryCalculations();
-        System.out.println((System.nanoTime()-time)/1e9+" binaarit");
-    }
 
 
 }
